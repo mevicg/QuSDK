@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:example/QuApiExample.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:loader/QuApiLoader.xcodeproj">
+   </FileRef>
+   <Group
+      location = "container:"
+      name = "api">
+      <FileRef
+         location = "group:api/Include/quApi.h">
+      </FileRef>
+      <FileRef
+         location = "group:api/Include/quApi.hpp">
+      </FileRef>
+      <FileRef
+         location = "group:api/Include/quConstants.h">
+      </FileRef>
+   </Group>
+</Workspace>

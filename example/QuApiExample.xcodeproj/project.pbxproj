@@ -1,0 +1,212 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F49EFB5E28882ACA003A72FD /* ActivityChannelThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F49EFB5928882ACA003A72FD /* ActivityChannelThread.cpp */; };
+		F49EFB5F28882ACA003A72FD /* TestdataGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F49EFB5B28882ACA003A72FD /* TestdataGenerator.cpp */; };
+		F49EFB6028882ACA003A72FD /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F49EFB5D28882ACA003A72FD /* main.cpp */; };
+		F49EFB6228882D15003A72FD /* libQuApiLoader.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F49EFB6128882D15003A72FD /* libQuApiLoader.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F46004F62388B28900CA5E77 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		F46004F82388B28900CA5E77 /* QuApiExample */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = QuApiExample; sourceTree = BUILT_PRODUCTS_DIR; };
+		F49EFB5928882ACA003A72FD /* ActivityChannelThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ActivityChannelThread.cpp; sourceTree = "<group>"; };
+		F49EFB5A28882ACA003A72FD /* ActivityChannelThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityChannelThread.h; sourceTree = "<group>"; };
+		F49EFB5B28882ACA003A72FD /* TestdataGenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestdataGenerator.cpp; sourceTree = "<group>"; };
+		F49EFB5C28882ACA003A72FD /* TestdataGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestdataGenerator.h; sourceTree = "<group>"; };
+		F49EFB5D28882ACA003A72FD /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		F49EFB6128882D15003A72FD /* libQuApiLoader.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libQuApiLoader.a; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F46004F52388B28900CA5E77 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F49EFB6228882D15003A72FD /* libQuApiLoader.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F46004EF2388B28900CA5E77 = {
+			isa = PBXGroup;
+			children = (
+				F49EFB5928882ACA003A72FD /* ActivityChannelThread.cpp */,
+				F49EFB5A28882ACA003A72FD /* ActivityChannelThread.h */,
+				F49EFB5D28882ACA003A72FD /* main.cpp */,
+				F49EFB5B28882ACA003A72FD /* TestdataGenerator.cpp */,
+				F49EFB5C28882ACA003A72FD /* TestdataGenerator.h */,
+				F48754AF23A0F89400520380 /* Frameworks */,
+				F46004F92388B28900CA5E77 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F46004F92388B28900CA5E77 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F46004F82388B28900CA5E77 /* QuApiExample */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F48754AF23A0F89400520380 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F49EFB6128882D15003A72FD /* libQuApiLoader.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F46004F72388B28900CA5E77 /* QuApiExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F46004FF2388B28900CA5E77 /* Build configuration list for PBXNativeTarget "QuApiExample" */;
+			buildPhases = (
+				F46004F42388B28900CA5E77 /* Sources */,
+				F46004F52388B28900CA5E77 /* Frameworks */,
+				F46004F62388B28900CA5E77 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = QuApiExample;
+			productName = QuApiExample;
+			productReference = F46004F82388B28900CA5E77 /* QuApiExample */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F46004F02388B28900CA5E77 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1120;
+				ORGANIZATIONNAME = Mevi;
+				TargetAttributes = {
+					F46004F72388B28900CA5E77 = {
+						CreatedOnToolsVersion = 10.3;
+					};
+				};
+			};
+			buildConfigurationList = F46004F32388B28900CA5E77 /* Build configuration list for PBXProject "QuApiExample" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F46004EF2388B28900CA5E77;
+			productRefGroup = F46004F92388B28900CA5E77 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F46004F72388B28900CA5E77 /* QuApiExample */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F46004F42388B28900CA5E77 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F49EFB5E28882ACA003A72FD /* ActivityChannelThread.cpp in Sources */,
+				F49EFB5F28882ACA003A72FD /* TestdataGenerator.cpp in Sources */,
+				F49EFB6028882ACA003A72FD /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		F46004FD2388B28900CA5E77 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					QU_API_ENABLED,
+					DEBUG,
+				);
+				HEADER_SEARCH_PATHS = ../api/Include/;
+				USE_HEADERMAP = NO;
+			};
+			name = Debug;
+		};
+		F46004FE2388B28900CA5E77 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				GCC_PREPROCESSOR_DEFINITIONS = QU_API_ENABLED;
+				HEADER_SEARCH_PATHS = ../api/Include/;
+				USE_HEADERMAP = NO;
+			};
+			name = Release;
+		};
+		F46005002388B28900CA5E77 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		F46005012388B28900CA5E77 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F46004F32388B28900CA5E77 /* Build configuration list for PBXProject "QuApiExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F46004FD2388B28900CA5E77 /* Debug */,
+				F46004FE2388B28900CA5E77 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F46004FF2388B28900CA5E77 /* Build configuration list for PBXNativeTarget "QuApiExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F46005002388B28900CA5E77 /* Debug */,
+				F46005012388B28900CA5E77 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F46004F02388B28900CA5E77 /* Project object */;
+}

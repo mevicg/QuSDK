@@ -1,0 +1,14 @@
+
+#Visual Studio
+bin/
+build/
+/.vs/
+*.vcxproj.user
+
+#Xcode
+DerivedData/
+xcuserdata/
+
+#macOS
+*.DS_Store
+._*
