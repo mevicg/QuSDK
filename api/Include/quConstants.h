@@ -49,7 +49,10 @@ typedef char quInt8;
 
 //QuApi core
 #define QU_MAKE_VERSION( major, minor, micro ) ( ( major << 24 ) | ( minor << 16 ) | micro )
-#define QU_VERSION QU_MAKE_VERSION( 0, 1, 0 )
+#define QU_VERSION QU_MAKE_VERSION( 0, 1, 1 )
+#define QU_EXTRACT_MAJOR( version ) ( version >> 24 )
+#define QU_EXTRACT_MINOR( version ) ( ( version >> 16 ) & 0xFF )
+#define QU_EXTRACT_MICRO( version ) ( version & 0xFFFF )
 
 #define QU_RGB( r, g, b ) ( ( ( (quUInt32)r & 0xFF ) << 0 ) | ( ( (quUInt32)g & 0xFF ) << 8 ) | ( ( (quUInt32)b & 0xFF ) << 16 ) )
 #define QU_R( rgb ) quUInt8( rgb >> 0 )

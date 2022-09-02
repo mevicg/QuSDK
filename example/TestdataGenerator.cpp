@@ -18,6 +18,8 @@
 #include <random>
 #include <string>
 #include <thread>
+#include <future>
+#include <iostream>
 
 static std::random_device rd;
 static std::mt19937 gen( rd() );
@@ -37,30 +39,38 @@ void TestdataGenerator::Run()
 {
 	Start();
 
-	while( true )
-	{
-		TimePoint timeNow = Clock::now();
-		auto nanosSinceStart = std::chrono::duration_cast< std::chrono::nanoseconds >( timeNow - applicationStartTime ).count();
-		//We can use nanosecond precision time snapshots, but we need to be careful not to overflow any data type. So for that reason
-		//we use integer division to find seconds and then use floating point math only on the fractional part.
-		float secondsSinceStart = 0.0f;
-		secondsSinceStart += nanosSinceStart / 1000000000;
-		secondsSinceStart += ( nanosSinceStart % 1000000000 ) * 0.000000001f;
-
-		//Test counters
-		sineWave.SetValue( sinf( secondsSinceStart * 2.0f * 3.1415f ) );
-		saw.SetValue( fmodf( secondsSinceStart, 1.0f ) );
-		saw100.SetValue( fmodf( secondsSinceStart * 100.0f, 100.0f ) );
-
-		//Test markers
-		if( timeNow > timeOfNextMark )
+	std::atomic< bool > generating = true;
+	std::future future = std::async( [ & ]() {
+		while( generating.load() )
 		{
-			quAddMarker( "Test Marker" );
-			timeOfNextMark = GetNextMarkerTime();
-		}
+			TimePoint timeNow = Clock::now();
+			auto nanosSinceStart = std::chrono::duration_cast< std::chrono::nanoseconds >( timeNow - applicationStartTime ).count();
+			//We can use nanosecond precision time snapshots, but we need to be careful not to overflow any data type. So for that reason
+			//we use integer division to find seconds and then use floating point math only on the fractional part.
+			float secondsSinceStart = 0.0f;
+			secondsSinceStart += nanosSinceStart / 1000000000;
+			secondsSinceStart += ( nanosSinceStart % 1000000000 ) * 0.000000001f;
 
-		std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
-	}
+			//Test counters
+			sineWave.SetValue( sinf( secondsSinceStart * 2.0f * 3.1415f ) );
+			saw.SetValue( fmodf( secondsSinceStart, 1.0f ) );
+			saw100.SetValue( fmodf( secondsSinceStart * 100.0f, 100.0f ) );
+
+			//Test markers
+			if( timeNow > timeOfNextMark )
+			{
+				quAddMarker( "Test Marker" );
+				timeOfNextMark = GetNextMarkerTime();
+			}
+
+			std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
+		}
+	} );
+
+	std::cout << "Press any key to exit" << std::endl;
+	std::cin.get();            //This blocks until any key is pressed.
+	generating.store( false ); //Tells the generation thread that it should stop.
+	future.get();              //Waits for the generation thread to shut everything down.
 
 	Stop();
 }

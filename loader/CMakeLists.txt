@@ -12,6 +12,6 @@ if( QU_API_INSTRUMENT )
 	target_link_libraries( QuApiLoader PUBLIC QuApi )
 else()
 	#By not building the loader when QuApi is disabled or unsupported we'll compile
-	#it's usage as no-ops due to the way it's headers are written.
+	#it's usage as no-ops due to the way QuApi's headers are written.
 	add_library( QuApiLoader ALIAS QuApi )
 endif()
