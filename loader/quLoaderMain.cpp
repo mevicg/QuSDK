@@ -20,6 +20,12 @@
 #include <cstring>
 #include "quLoaderDylib.h"
 #include "quLoaderEnvVar.h"
+#if defined( __APPLE__ )
+#	if !defined( __OBJC__ )
+		static_assert( false, "This file must be compiled as Objective-C++." );
+#	endif
+#	import <Cocoa/Cocoa.h>
+#endif
 
 namespace qu
 {
@@ -93,8 +99,7 @@ static bool LoadQuApi()
 #else
 	//Xcode doesn't pass through the user's environment variables, so we have to manually
 	//parse the .bash_profile file to find the environment variable's value.
-	char* home = getenv( "HOME" );
-	std::string bashProfilePath = std::string( home ) + "/.bash_profile";
+	std::string bashProfilePath = std::string( [NSHomeDirectory() UTF8String] ) + "/.bash_profile";
 	std::ifstream istream;
 	istream.open( bashProfilePath.c_str(), std::ifstream::in );
 	std::string bashProfileContents;

@@ -19,7 +19,7 @@
 		F477D7602798A8970013DD83 /* quLoaderDylib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = quLoaderDylib.h; sourceTree = "<group>"; };
 		F477D7612798A8970013DD83 /* quLoaderEnvVar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = quLoaderEnvVar.h; sourceTree = "<group>"; };
 		F477D7622798A8970013DD83 /* quLoaderEnvVar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = quLoaderEnvVar.cpp; sourceTree = "<group>"; };
-		F477D7632798A8970013DD83 /* quLoaderMain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = quLoaderMain.cpp; sourceTree = "<group>"; };
+		F477D7632798A8970013DD83 /* quLoaderMain.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = quLoaderMain.cpp; sourceTree = "<group>"; };
 		F477D7642798A8970013DD83 /* quLoaderDylib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = quLoaderDylib.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 

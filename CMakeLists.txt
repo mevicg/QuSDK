@@ -52,7 +52,13 @@ endif()
 #debug/release configurations.
 add_compile_options( "$<$<CONFIG:DEBUG>:-DDEBUG>" )
 
-OPTION( QU_API_INSTRUMENT "Whether or not Qumulus instrumentation should be enabled." ON )
+if( QU_API_LINUX )
+	set( QU_API_INSTRUMENT_DEFAULT OFF )
+else()
+	set( QU_API_INSTRUMENT_DEFAULT ON )
+endif()
+OPTION( QU_API_INSTRUMENT "Whether or not Qumulus instrumentation should be enabled." ${QU_API_INSTRUMENT_DEFAULT} )
+
 if( QU_API_INSTRUMENT )
 	#QuApi is only implemented for windows and macos.
 	if( QU_API_WINDOWS OR QU_API_MACOS )
@@ -66,7 +72,7 @@ endif()
 
 add_subdirectory( "api/" )
 add_subdirectory( "loader/" )
-OPTION( QU_API_BUILD_EXAMPLES "Whether or not QuApi examples should be built." QU_API_IS_ROOT_PROJECT )
+OPTION( QU_API_BUILD_EXAMPLES "Whether or not QuApi examples should be built." ${QU_API_IS_ROOT_PROJECT} )
 if( QU_API_BUILD_EXAMPLES )
 	add_subdirectory( "example/" )
 endif()

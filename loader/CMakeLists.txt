@@ -10,6 +10,12 @@ if( QU_API_INSTRUMENT )
 	set_target_properties( QuApiLoader PROPERTIES FOLDER "libs/qusdk" )
 
 	target_link_libraries( QuApiLoader PUBLIC QuApi )
+
+	if( APPLE )
+		target_compile_options( QuApiLoader PRIVATE
+		                        $<$<COMPILE_LANGUAGE:CXX>:-x objective-c++>
+		                        $<$<COMPILE_LANGUAGE:C>:-x objective-c> )
+	endif()
 else()
 	#By not building the loader when QuApi is disabled or unsupported we'll compile
 	#it's usage as no-ops due to the way QuApi's headers are written.
