@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2022 mevicg (https://mevicg.com)
+ * Copyright (c) 2020-2023 mevicg (https://mevicg.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@
 #include "quLoaderEnvVar.h"
 #if defined( __APPLE__ )
 #	if !defined( __OBJC__ )
-		static_assert( false, "This file must be compiled as Objective-C++." );
+static_assert( false, "This file must be compiled as Objective-C++." );
 #	endif
 #	import <Cocoa/Cocoa.h>
 #endif

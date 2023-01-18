@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2022 mevicg (https://mevicg.com)
+ * Copyright (c) 2020-2023 mevicg (https://mevicg.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,9 @@
 #pragma once
 
 #if defined( _WIN64 )
-#	define QU_IMPORT __declspec( dllimport )
 #	define QU_CALL_CONV __cdecl
 #elif defined( __APPLE__ )
 #	include <cstddef> //For size_t
-#	define QU_IMPORT
 #	define QU_CALL_CONV
 #else
 //Any platform can be supported as long as we're not enabled. When we're disabled all our
@@ -32,7 +30,6 @@
 #		error "Unsupported Platform"
 #	else
 //Make it compile with the no-op functions at least.
-#		define QU_IMPORT
 #		define QU_CALL_CONV
 #	endif
 #endif
@@ -49,7 +46,7 @@ typedef char quInt8;
 
 //QuApi core
 #define QU_MAKE_VERSION( major, minor, micro ) ( ( major << 24 ) | ( minor << 16 ) | micro )
-#define QU_VERSION QU_MAKE_VERSION( 0, 1, 2 )
+#define QU_VERSION QU_MAKE_VERSION( 1, 0, 0 )
 #define QU_EXTRACT_MAJOR( version ) ( version >> 24 )
 #define QU_EXTRACT_MINOR( version ) ( ( version >> 16 ) & 0xFF )
 #define QU_EXTRACT_MICRO( version ) ( version & 0xFFFF )
