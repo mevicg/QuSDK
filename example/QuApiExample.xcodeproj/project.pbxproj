@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F47A049A2A884B2E00EA76F6 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F47A04992A884B2E00EA76F6 /* Cocoa.framework */; };
 		F49EFB5E28882ACA003A72FD /* ActivityChannelThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F49EFB5928882ACA003A72FD /* ActivityChannelThread.cpp */; };
 		F49EFB5F28882ACA003A72FD /* TestdataGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F49EFB5B28882ACA003A72FD /* TestdataGenerator.cpp */; };
 		F49EFB6028882ACA003A72FD /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F49EFB5D28882ACA003A72FD /* main.cpp */; };
@@ -27,6 +28,7 @@
 
 /* Begin PBXFileReference section */
 		F46004F82388B28900CA5E77 /* QuApiExample */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = QuApiExample; sourceTree = BUILT_PRODUCTS_DIR; };
+		F47A04992A884B2E00EA76F6 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		F49EFB5928882ACA003A72FD /* ActivityChannelThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ActivityChannelThread.cpp; sourceTree = "<group>"; };
 		F49EFB5A28882ACA003A72FD /* ActivityChannelThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityChannelThread.h; sourceTree = "<group>"; };
 		F49EFB5B28882ACA003A72FD /* TestdataGenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestdataGenerator.cpp; sourceTree = "<group>"; };
@@ -40,6 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F47A049A2A884B2E00EA76F6 /* Cocoa.framework in Frameworks */,
 				F49EFB6228882D15003A72FD /* libQuApiLoader.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -71,6 +74,7 @@
 		F48754AF23A0F89400520380 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F47A04992A884B2E00EA76F6 /* Cocoa.framework */,
 				F49EFB6128882D15003A72FD /* libQuApiLoader.a */,
 			);
 			name = Frameworks;
@@ -147,11 +151,13 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					QU_API_ENABLED,
 					DEBUG,
 				);
 				HEADER_SEARCH_PATHS = ../api/Include/;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				USE_HEADERMAP = NO;
 			};
 			name = Debug;
@@ -163,6 +169,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				GCC_PREPROCESSOR_DEFINITIONS = QU_API_ENABLED;
 				HEADER_SEARCH_PATHS = ../api/Include/;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				USE_HEADERMAP = NO;
 			};
 			name = Release;

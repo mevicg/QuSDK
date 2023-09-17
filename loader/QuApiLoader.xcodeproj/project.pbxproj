@@ -21,6 +21,8 @@
 		F477D7622798A8970013DD83 /* quLoaderEnvVar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = quLoaderEnvVar.cpp; sourceTree = "<group>"; };
 		F477D7632798A8970013DD83 /* quLoaderMain.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = quLoaderMain.cpp; sourceTree = "<group>"; };
 		F477D7642798A8970013DD83 /* quLoaderDylib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = quLoaderDylib.cpp; sourceTree = "<group>"; };
+		F47A04952A884AAE00EA76F6 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		F47A04972A884AC100EA76F6 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +45,7 @@
 				F477D7612798A8970013DD83 /* quLoaderEnvVar.h */,
 				F477D7632798A8970013DD83 /* quLoaderMain.cpp */,
 				F44E42B92388B5F3006E065E /* Products */,
+				F47A04942A884AAD00EA76F6 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -52,6 +55,15 @@
 				F44E42B82388B5F3006E065E /* libQuApiLoader.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		F47A04942A884AAD00EA76F6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F47A04972A884AC100EA76F6 /* CoreFoundation.framework */,
+				F47A04952A884AAE00EA76F6 /* Cocoa.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -137,12 +149,13 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					QU_API_ENABLED,
 					DEBUG,
 				);
 				HEADER_SEARCH_PATHS = ../api/Include/;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				USE_HEADERMAP = NO;
 			};
 			name = Debug;
@@ -154,7 +167,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				GCC_PREPROCESSOR_DEFINITIONS = QU_API_ENABLED;
 				HEADER_SEARCH_PATHS = ../api/Include/;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				USE_HEADERMAP = NO;
 			};
 			name = Release;

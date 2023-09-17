@@ -280,7 +280,8 @@ private:
 
 #define QU_CAT(a, b) a ## b
 #define QU_CONCAT( a, b ) QU_CAT( a, b )
-#define QU_ONESHOT_ACTIVITY( activityName ) QU_SCOPED_ACTIVITY( activityName, QU_CONCAT( qusa, __LINE__ ) )
+#define QU_AUTO_ID QU_CONCAT( quaid, __LINE__ )
+#define QU_ONESHOT_ACTIVITY( activityName ) QU_SCOPED_ACTIVITY( activityName, QU_AUTO_ID )
 #define QU_RECURRING_ACTIVITY( activityName ) QU_DECLARE_SCOPED_ACTIVITY( QU_CONCAT( quai, __LINE__ ), QU_CONCAT( qusa, __LINE__ ), activityName )
 #if defined( _WIN64 )
 #	define QU_INSTRUMENT_FUNCTION() QU_RECURRING_ACTIVITY( __FUNCTION__ )

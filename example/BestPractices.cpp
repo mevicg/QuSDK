@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-//The hpp is the header that includes the entire api. When you include this you can make use of the c-function,
+//The hpp is the header that includes the entire api. When you include this you can make use of the c-functions,
 //the c++ utilities and the macros. If you're compiling as c++ we suggest including this file instead of the .h file
 //which is intended for pure c.
 #include <quApi.hpp>
@@ -103,7 +103,7 @@ void UpdatePlayer( int playerIndex )
 		quAddRecurringActivity( "Updating player #3", 0 ),
 	};
 	//We have informed the profiler of the existance of these activities, this happens once.
-	//After that we can use those IDs freely, bypassing all the repeated processing
+	//After that we can use those IDs freely, bypassing all the repeated processing.
 	qu::ScopedActivity activity2( ACTIVITY_IDS[ playerIndex ] );
 	//... do update work.
 }
@@ -111,7 +111,7 @@ void UpdatePlayer( int playerIndex )
 
 /**
  * Finally you may want to instrument code you dont have access to (ie a library). If you cant access the code,
- * you cant put the instrumentation inside those functions. In this case you can only put the instrumentation outside of
+ * you can't put the instrumentation inside those functions. In this case you can only put the instrumentation outside of
  * of the function you want to see. Obviously you have to do this everywhere you use that library, so it should be a last resort.
  */
 namespace Lib
@@ -154,7 +154,7 @@ void UseLibrary()
 /**
  * That's all!
  * Create ScopedActivityChannels on threads you want to instrument and place QU_INSTRUMENT_FUNCTION macros
- * inside the functions you want to see show up in the profiler. Use counters to visualize values and markers for events.
+ * inside the functions you want to see show up in the profiler. Use counters to visualize values and use markers for events.
  * If you want to use some of the more advanced features like colors and activities not bound to threads
  * you should have a look at the Advanced.cpp file.
  */

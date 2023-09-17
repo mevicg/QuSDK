@@ -104,11 +104,14 @@ static bool LoadQuApi()
 	istream.open( bashProfilePath.c_str(), std::ifstream::in );
 	std::string bashProfileContents;
 	char lineBuffer[ 0xFFFF ];
-	std::string libName = "libquapi.dylib";
+	std::string libName = "/Applications/Qumulus/Contents/MacOS/libquapi.dylib";
 	while( istream.good() )
 	{
 		memset( lineBuffer, 0, sizeof( lineBuffer ) );
 		istream.getline( lineBuffer, sizeof( lineBuffer ) );
+		if( const char* pos = strstr( lineBuffer, "#" ); pos == lineBuffer )
+			continue; //Skip commented lines
+
 		if( const char* pos = strstr( lineBuffer, envVarName.c_str() ) )
 		{
 			libName = pos + envVarName.length() + 1;
