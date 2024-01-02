@@ -25,6 +25,7 @@
 static_assert( false, "This file must be compiled as Objective-C++." );
 #	endif
 #	import <Cocoa/Cocoa.h>
+#   include <mach-o/dyld.h>
 #endif
 
 namespace qu
@@ -97,14 +98,32 @@ static bool LoadQuApi()
 	if( !EnvVar::GetValue( envVarName.c_str(), libName.data(), libName.size() ) )
 		libName = "QuApi.dll";
 #else
-	//Xcode doesn't pass through the user's environment variables, so we have to manually
-	//parse the .bash_profile file to find the environment variable's value.
+    //By default we load quapi from the currently installed Qumulus version. This makes instrumented applications
+    //use the same version as the installed profiler and dont have to ship the api runtime themselves.
+    std::string libName = "/Applications/Qumulus/Contents/MacOS/libquapi.dylib";
+    
+    //If the application did ship the runtime itself (ie because it requires a specific version) it'll be next
+    //to the executable. See if the runtime exists there and use that instead.
+    uint32 pathSize = FILENAME_MAX;
+    char pathBuffer[ FILENAME_MAX + 1 ] = {};
+    if( _NSGetExecutablePath( pathBuffer, &pathSize ) == 0 )
+    {
+        std::filesystem::path libPath = pathBuffer;
+        libPath.replace_filename( "libquapi.dylib" );
+        if( std::filesystem::exists( libPath ) )
+            libName = libPath;
+    }
+    
+    /**
+     * We also support a system wide configuration determining where to load the api from. This is mostly used for development of
+     * the api itself and doesn't have much use for the users. Xcode doesn't pass through the user's environment variables though,
+     * so we have to manually parse the .bash_profile file to find the environment variable's value.
+     */
 	std::string bashProfilePath = std::string( [NSHomeDirectory() UTF8String] ) + "/.bash_profile";
 	std::ifstream istream;
 	istream.open( bashProfilePath.c_str(), std::ifstream::in );
 	std::string bashProfileContents;
 	char lineBuffer[ 0xFFFF ];
-	std::string libName = "/Applications/Qumulus/Contents/MacOS/libquapi.dylib";
 	while( istream.good() )
 	{
 		memset( lineBuffer, 0, sizeof( lineBuffer ) );

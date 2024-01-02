@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <math.h>
 
 //The hpp is the header that includes the entire api. When you include this you can make use of the c-functions,
 //the c++ utilities and the macros. If you're compiling as c++ we suggest including this file instead of the .h file
