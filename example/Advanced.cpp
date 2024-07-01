@@ -84,16 +84,16 @@ struct Application
  * In some cases you may have activities executing on different activity channels (ie different threads with channels created for that thread).
  * It is possible to link activities together. This may be useful when you've got one activity triggering another activity
  * to run in a seperate channel. For example when you're launching tasks this may be used to figure out who launched a task executing
- * on one of your task threads. Flows are attached to the highest level activity in their channel's stack.
+ * on one of your task threads. Flows are attached to the currently running activity in their channel's stack.
  */
 quFlowID flowID = QU_INVALID_FLOW_ID;
 void IOThread_ReadFile()
 {
 	QU_INSTRUMENT_FUNCTION();
-	flowID = quStartFlow( quGetChannelIDForCurrentThread(), "Detatch for decompression" );
+	flowID = quStartFlow( quGetChannelIDForCurrentThread() );
 }
 void TaskThread_ExecuteTask()
 {
 	QU_INSTRUMENT_FUNCTION();
-	quStopFlow( quGetChannelIDForCurrentThread(), flowID );
+	quStopFlow( flowID, quGetChannelIDForCurrentThread() );
 }

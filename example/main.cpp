@@ -38,6 +38,13 @@
  * 4. Finally the data that's being generated for Qumulus demo purposes is implemented in TestdataGenerator and ActivityChannelThread.
  */
 
+void QU_CALL_CONV LogHook( quLogSeverity severity, const char* logMessage )
+{
+	if( severity == QU_LOG_SEVERITY_INFO )
+		std::cout << logMessage;
+	else
+		std::cerr << logMessage;
+}
 
 int main( int argc, const char* argv[] )
 {
@@ -47,7 +54,7 @@ int main( int argc, const char* argv[] )
 	 * This way you can ship applications with instrumentation enabled. Alternatively you can limit yourself to
 	 * using the macros only and compile the calls out completely.
 	 */
-	if( !quInitialize( QU_VERSION ) )
+	if( !quInitialize( QU_VERSION, &LogHook ) )
 	{
 		std::cerr << "Starting QuApi example failed, QuApi redistributable may not be installed or is of the incorrect version.." << std::endl;
 		return -1;

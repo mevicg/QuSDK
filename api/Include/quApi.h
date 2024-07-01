@@ -31,8 +31,8 @@
 #endif
 
 //QuApi core
-typedef bool( QU_CALL_CONV* quInitialize_Ptr )( quUInt32 version );
-QU_INLINE_IF_DISABLED bool QU_CALL_CONV quInitialize( quUInt32 version ) QU_RETURN_IF_DISABLED( false );
+typedef bool( QU_CALL_CONV* quInitialize_Ptr )( quUInt32 version, quLogHook_Ptr logHook );
+QU_INLINE_IF_DISABLED bool QU_CALL_CONV quInitialize( quUInt32 version, quLogHook_Ptr logHook ) QU_RETURN_IF_DISABLED( false );
 typedef void( QU_CALL_CONV* quRelease_Ptr )();
 QU_INLINE_IF_DISABLED void QU_CALL_CONV quRelease() QU_RETURN_IF_DISABLED( void() );
 
@@ -76,16 +76,13 @@ QU_INLINE_IF_DISABLED quActivityID QU_CALL_CONV quStartActivity( quActivityChann
 typedef bool( QU_CALL_CONV* quStopActivity_Ptr )( quActivityID activityID );
 QU_INLINE_IF_DISABLED bool QU_CALL_CONV quStopActivity( quActivityID activityID ) QU_RETURN_IF_DISABLED( false );
 typedef bool( QU_CALL_CONV* quRemoveActivityChannel_Ptr )( quActivityChannelID channelID );
-//TODO: Implement flow support
-inline quFlowID QU_CALL_CONV quStartFlow( quActivityChannelID sourceChannel, const char* flowName )
-{
-	return QU_INVALID_FLOW_ID;
-}
-inline bool QU_CALL_CONV quStopFlow( quActivityChannelID targetChannel, quFlowID flowID )
-{
-	return false;
-}
 QU_INLINE_IF_DISABLED bool QU_CALL_CONV quRemoveActivityChannel( quActivityChannelID channelID ) QU_RETURN_IF_DISABLED( false );
+
+//Flow
+typedef quFlowID( QU_CALL_CONV* quStartFlow_Ptr )( quActivityChannelID sourceChannel );
+QU_INLINE_IF_DISABLED quFlowID QU_CALL_CONV quStartFlow( quActivityChannelID sourceChannel ) QU_RETURN_IF_DISABLED( QU_INVALID_FLOW_ID );
+typedef bool( QU_CALL_CONV* quStopFlow_Ptr )( quFlowID flowID, quActivityChannelID targetChannel );
+QU_INLINE_IF_DISABLED bool QU_CALL_CONV quStopFlow( quFlowID flowID, quActivityChannelID targetChannel ) QU_RETURN_IF_DISABLED( false );
 
 //Markers
 typedef void( QU_CALL_CONV* quAddMarker_Ptr )( const char* markerName );

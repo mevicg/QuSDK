@@ -17,6 +17,7 @@
 #include <quApi.h>
 #include <string>
 #include <fstream>
+#include <sstream>
 #include <cstring>
 #include "quLoaderDylib.h"
 #include "quLoaderEnvVar.h"
@@ -25,7 +26,7 @@
 static_assert( false, "This file must be compiled as Objective-C++." );
 #	endif
 #	import <Cocoa/Cocoa.h>
-#   include <mach-o/dyld.h>
+#	include <mach-o/dyld.h>
 #endif
 
 namespace qu
@@ -59,6 +60,10 @@ static quStartActivity_Ptr StartActivity = nullptr;
 static quStopActivity_Ptr StopActivity = nullptr;
 static quRemoveActivityChannel_Ptr RemoveActivityChannel = nullptr;
 
+//Flow
+static quStartFlow_Ptr StartFlow = nullptr;
+static quStopFlow_Ptr StopFlow = nullptr;
+
 //Markers
 static quAddMarker_Ptr AddMarker = nullptr;
 
@@ -70,7 +75,7 @@ namespace qul
 static Dylib library;
 
 static void UnloadQuApi();
-static bool LoadQuApi()
+static bool LoadQuApi( quLogHook_Ptr logHook )
 {
 	//It's possible that the application tries to load the dll multiple times. This might be because it just wants to
 	//ensure the library has been loaded before it's using it. If we've already loaded the library we dont have to do it again.
@@ -98,27 +103,27 @@ static bool LoadQuApi()
 	if( !EnvVar::GetValue( envVarName.c_str(), libName.data(), libName.size() ) )
 		libName = "QuApi.dll";
 #else
-    //By default we load quapi from the currently installed Qumulus version. This makes instrumented applications
-    //use the same version as the installed profiler and dont have to ship the api runtime themselves.
-    std::string libName = "/Applications/Qumulus/Contents/MacOS/libquapi.dylib";
-    
-    //If the application did ship the runtime itself (ie because it requires a specific version) it'll be next
-    //to the executable. See if the runtime exists there and use that instead.
-    uint32 pathSize = FILENAME_MAX;
-    char pathBuffer[ FILENAME_MAX + 1 ] = {};
-    if( _NSGetExecutablePath( pathBuffer, &pathSize ) == 0 )
-    {
-        std::filesystem::path libPath = pathBuffer;
-        libPath.replace_filename( "libquapi.dylib" );
-        if( std::filesystem::exists( libPath ) )
-            libName = libPath;
-    }
-    
-    /**
-     * We also support a system wide configuration determining where to load the api from. This is mostly used for development of
-     * the api itself and doesn't have much use for the users. Xcode doesn't pass through the user's environment variables though,
-     * so we have to manually parse the .bash_profile file to find the environment variable's value.
-     */
+	//By default we load quapi from the currently installed Qumulus version. This makes instrumented applications
+	//use the same version as the installed profiler and dont have to ship the api runtime themselves.
+	std::string libName = "/Applications/Qumulus/Contents/MacOS/libquapi.dylib";
+
+	//If the application did ship the runtime itself (ie because it requires a specific version) it'll be next
+	//to the executable. See if the runtime exists there and use that instead.
+	uint32 pathSize = FILENAME_MAX;
+	char pathBuffer[ FILENAME_MAX + 1 ] = {};
+	if( _NSGetExecutablePath( pathBuffer, &pathSize ) == 0 )
+	{
+		std::filesystem::path libPath = pathBuffer;
+		libPath.replace_filename( "libquapi.dylib" );
+		if( std::filesystem::exists( libPath ) )
+			libName = libPath;
+	}
+
+	/**
+	 * We also support a system wide configuration determining where to load the api from. This is mostly used for development of
+	 * the api itself and doesn't have much use for the users. Xcode doesn't pass through the user's environment variables though,
+	 * so we have to manually parse the .bash_profile file to find the environment variable's value.
+	 */
 	std::string bashProfilePath = std::string( [NSHomeDirectory() UTF8String] ) + "/.bash_profile";
 	std::ifstream istream;
 	istream.open( bashProfilePath.c_str(), std::ifstream::in );
@@ -146,7 +151,15 @@ static bool LoadQuApi()
 	 * without introducing any overhead.
 	 */
 	if( !library.Load( libName.c_str() ) )
+	{
+		if( logHook != nullptr )
+		{
+			std::ostringstream oss;
+			oss << "QuApi: Failed loading library from \"" << libName << "\".";
+			logHook( QU_LOG_SEVERITY_ERRR, oss.str().c_str() );
+		}
 		return false;
+	}
 
 	bool gotAllFunctions = true;
 
@@ -178,11 +191,22 @@ static bool LoadQuApi()
 	gotAllFunctions &= ( qu::StopActivity = (quStopActivity_Ptr)library.GetFunction( "quStopActivity" ) ) != nullptr;
 	gotAllFunctions &= ( qu::RemoveActivityChannel = (quRemoveActivityChannel_Ptr)library.GetFunction( "quRemoveActivityChannel" ) ) != nullptr;
 
+	//Flow
+	gotAllFunctions &= ( qu::StartFlow = (quStartFlow_Ptr)library.GetFunction( "quStartFlow" ) ) != nullptr;
+	gotAllFunctions &= ( qu::StopFlow = (quStopFlow_Ptr)library.GetFunction( "quStopFlow" ) ) != nullptr;
+
 	//Markers
 	gotAllFunctions &= ( qu::AddMarker = (quAddMarker_Ptr)library.GetFunction( "quAddMarker" ) ) != nullptr;
 
 	if( !gotAllFunctions )
 	{
+		if( logHook != nullptr )
+		{
+			std::ostringstream oss;
+			oss << "QuApi: Failed loading library, functions are missing.";
+			logHook( QU_LOG_SEVERITY_ERRR, oss.str().c_str() );
+		}
+
 		UnloadQuApi();
 		return false;
 	}
@@ -218,6 +242,10 @@ void UnloadQuApi()
 	qu::StopActivity = nullptr;
 	qu::RemoveActivityChannel = nullptr;
 
+	//Flow
+	qu::StartFlow = nullptr;
+	qu::StopFlow = nullptr;
+
 	//Markers
 	qu::AddMarker = nullptr;
 
@@ -227,15 +255,15 @@ void UnloadQuApi()
 } //End namespace qul
 
 //QuApi core
-bool QU_CALL_CONV quInitialize( quUInt32 version )
+bool QU_CALL_CONV quInitialize( quUInt32 headerVersion, quLogHook_Ptr logHook )
 {
 	//It's possible for the application to just try to initialize before explicitly loading the dll. To support this case we
 	//automatically try to load the library here.
-	if( qu::Initialize == nullptr && !qul::LoadQuApi() )
+	if( qu::Initialize == nullptr && !qul::LoadQuApi( logHook ) )
 		return false;
 
 	if( qu::Initialize != nullptr )
-		return qu::Initialize( version );
+		return qu::Initialize( headerVersion, logHook );
 	else
 		return false;
 }
@@ -352,7 +380,7 @@ quRecurringActivityID QU_CALL_CONV quAddRecurringActivity( const char* activityN
 		//If we've already failed to load the library we wont try again, probably the Qumulus application just isn't installed.
 		if( loadTriedAndFailed )
 			return QU_INVALID_RECURRING_ACTIVITY_ID;
-		if( !qul::LoadQuApi() )
+		if( !qul::LoadQuApi( nullptr ) )
 		{
 			loadTriedAndFailed = true;
 			return QU_INVALID_RECURRING_ACTIVITY_ID;
@@ -391,6 +419,22 @@ bool QU_CALL_CONV quRemoveActivityChannel( quActivityChannelID channelID )
 		return false;
 	else
 		return qu::RemoveActivityChannel( channelID );
+}
+
+//Flow
+quFlowID QU_CALL_CONV quStartFlow( quActivityChannelID sourceChannel )
+{
+	if( qu::StartFlow == nullptr )
+		return QU_INVALID_FLOW_ID;
+	else
+		return qu::StartFlow( sourceChannel );
+}
+bool QU_CALL_CONV quStopFlow( quFlowID flowID, quActivityChannelID targetChannel )
+{
+	if( qu::StopFlow == nullptr )
+		return false;
+	else
+		return qu::StopFlow( flowID, targetChannel );
 }
 
 //Markers

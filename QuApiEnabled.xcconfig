@@ -1,0 +1,8 @@
+//To use this configuration file you need to have defined QU_API_PATH prior to including it
+//from your project's configuration file. Usually it'll be something like ../libs/qusdk/api/.
+
+HEADER_SEARCH_PATHS = $(inherited) "$(QU_API_PATH)Include/"
+
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) QU_API_ENABLED=1
+
+OTHER_LDFLAGS = $(inherited) -lQuApiLoader

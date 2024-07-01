@@ -46,10 +46,16 @@ typedef char quInt8;
 
 //QuApi core
 #define QU_MAKE_VERSION( major, minor, micro ) ( ( major << 24 ) | ( minor << 16 ) | micro )
-#define QU_VERSION QU_MAKE_VERSION( 1, 1, 2 )
+#define QU_VERSION QU_MAKE_VERSION( 1, 2, 0 )
 #define QU_EXTRACT_MAJOR( version ) ( version >> 24 )
 #define QU_EXTRACT_MINOR( version ) ( ( version >> 16 ) & 0xFF )
 #define QU_EXTRACT_MICRO( version ) ( version & 0xFFFF )
+
+typedef quInt8 quLogSeverity;
+#define QU_LOG_SEVERITY_INFO 0
+#define QU_LOG_SEVERITY_WARN 1
+#define QU_LOG_SEVERITY_ERRR 2
+typedef void( QU_CALL_CONV* quLogHook_Ptr )( quLogSeverity severity, const char* logMessage ); //Logging callback with the message's severity and the utf-8 encoded message.
 
 #define QU_RGB( r, g, b ) ( ( ( (quUInt32)r & 0xFF ) << 0 ) | ( ( (quUInt32)g & 0xFF ) << 8 ) | ( ( (quUInt32)b & 0xFF ) << 16 ) )
 #define QU_R( rgb ) quUInt8( rgb >> 0 )
@@ -66,26 +72,25 @@ typedef char quInt8;
 #define QU_MAX_PATH_LENGTH 260    //Maximum length of file names including their path passed in when creating outputs.
 #define QU_MAX_APP_NAME_LENGTH 64 //Maximum length for an application making it's instrumentation available over the network.
 typedef quUInt16 quOutputID;
-#define QU_INVALID_OUTPUT_ID ( (quOutputID)-1 )
+#define QU_INVALID_OUTPUT_ID ( ( quOutputID ) - 1 )
 
 //Counters
 #define QU_MAX_COUNTER_NAME_LENGTH 63 //Maximum length of Counter names not including the nul character.
 typedef quUInt16 quCounterID;
-#define QU_INVALID_COUNTER_ID ( (quCounterID)-1 )
+#define QU_INVALID_COUNTER_ID ( ( quCounterID ) - 1 )
 
 //Activity channels
 #define QU_MAX_ACTIVITY_CHANNEL_NAME_LENGTH 63 //Maximum length of ActivityChannel names not including the nul character.
 typedef quUInt16 quActivityChannelID;
-#define QU_INVALID_ACTIVITY_CHANNEL_ID ( (quActivityChannelID)-1 )
+#define QU_INVALID_ACTIVITY_CHANNEL_ID ( ( quActivityChannelID ) - 1 )
 typedef quUInt32 quRecurringActivityID;
-#define QU_INVALID_RECURRING_ACTIVITY_ID ( (quRecurringActivityID)-1 )
+#define QU_INVALID_RECURRING_ACTIVITY_ID ( ( quRecurringActivityID ) - 1 )
 #define QU_MAX_RECURRING_ACTIVITY_NAME_LENGTH 63 //Maximum length of Recurring Activity names not including the nul character.
 typedef quUInt64 quActivityID;
-#define QU_INVALID_ACTIVITY_ID ( (quActivityID)-1 )
+#define QU_INVALID_ACTIVITY_ID ( ( quActivityID ) - 1 )
 #define QU_MAX_ACTIVITY_NAME_LENGTH 63 //Maximum length of Activity names not including the nul character.
 typedef quUInt64 quFlowID;
-#define QU_INVALID_FLOW_ID ( (quFlowID)-1 )
-#define QU_MAX_FLOW_NAME_LENGTH 63
+#define QU_INVALID_FLOW_ID ( ( quFlowID ) - 1 )
 
 //Markers
 #define QU_MAX_MARKER_NAME_LENGTH 63 //Maximum length of Marker names not including the nul character.

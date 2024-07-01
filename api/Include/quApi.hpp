@@ -27,12 +27,12 @@ class ScopedCounter
 {
 public:
 	ScopedCounter( const char* counterName, bool addImmediately = true ) :
-	    ScopedCounter( counterName, 0, 0, 0, addImmediately )
+	    ScopedCounter( counterName, 0, addImmediately )
 	{
 	}
-	ScopedCounter( const char* counterName, quUInt8 r, quUInt8 g, quUInt8 b, bool addImmediately = true ) :
+	ScopedCounter( const char* counterName, quUInt32 color, bool addImmediately = true ) :
 	    counterID( QU_INVALID_COUNTER_ID ),
-	    color( QU_RGB( r, g, b ) )
+	    color( color )
 	{
 		strncpy( nameBuffer, counterName, QU_MAX_COUNTER_NAME_LENGTH );
 		nameBuffer[ QU_MAX_COUNTER_NAME_LENGTH ] = '\0';
@@ -41,7 +41,7 @@ public:
 			Add();
 	}
 	ScopedCounter( ScopedCounter&& movable ) noexcept :
-	    ScopedCounter( "", 0, 0, 0, false )
+	    ScopedCounter( "", 0, false )
 	{
 		*this = std::move( movable );
 	}
@@ -93,13 +93,13 @@ class ScopedActivityChannel
 {
 public:
 	ScopedActivityChannel( const char* channelName, bool forCurrentThread, bool addImmediately = true ) :
-	    ScopedActivityChannel( channelName, forCurrentThread, 0, 0, 0, addImmediately )
+	    ScopedActivityChannel( channelName, forCurrentThread, 0, addImmediately )
 	{
 	}
-	ScopedActivityChannel( const char* channelName, bool forCurrentThread, quUInt8 r, quUInt8 g, quUInt8 b, bool addImmediately = true ) :
+	ScopedActivityChannel( const char* channelName, bool forCurrentThread, quUInt32 color, bool addImmediately = true ) :
 	    activityChannelID( QU_INVALID_ACTIVITY_CHANNEL_ID ),
 	    forCurrentThread( forCurrentThread ),
-	    color( QU_RGB( r, g, b ) )
+	    color( color )
 	{
 		strncpy( nameBuffer, channelName, QU_MAX_ACTIVITY_CHANNEL_NAME_LENGTH );
 		nameBuffer[ QU_MAX_ACTIVITY_CHANNEL_NAME_LENGTH ] = '\0';
@@ -108,7 +108,7 @@ public:
 			Add();
 	}
 	ScopedActivityChannel( ScopedActivityChannel&& movable ) noexcept :
-	    ScopedActivityChannel( "", false, 0, 0, 0, false )
+	    ScopedActivityChannel( "", false, 0, false )
 	{
 		*this = std::move( movable );
 	}
@@ -165,19 +165,25 @@ private:
 class ScopedActivity
 {
 public:
-	ScopedActivity( quRecurringActivityID recurringActivityID, quActivityChannelID activityChannelID = quGetChannelIDForCurrentThread() ) :
-	    activityChannelID( activityChannelID ),
-	    activityID( quStartRecurringActivity( activityChannelID, recurringActivityID ) )
-	{
-	}
 	ScopedActivity( const char* activityName, quActivityChannelID activityChannelID = quGetChannelIDForCurrentThread() ) :
-	    ScopedActivity( activityName, 0, 0, 0, activityChannelID )
+	    ScopedActivity( activityName, 0, activityChannelID )
 	{
 	}
-	ScopedActivity( const char* activityName, quUInt8 r, quUInt8 g, quUInt8 b, quActivityChannelID activityChannelID = quGetChannelIDForCurrentThread() ) :
-	    activityChannelID( activityChannelID ),
-	    activityID( quStartActivity( activityChannelID, activityName, QU_RGB( r, g, b ) ) )
+	ScopedActivity( const char* activityName, quUInt32 color, quActivityChannelID activityChannelID = quGetChannelIDForCurrentThread() ) :
+	    activityChannelID( activityChannelID )
 	{
+		if( activityChannelID != QU_INVALID_ACTIVITY_CHANNEL_ID )
+			activityID = quStartActivity( activityChannelID, activityName, color );
+		else
+			activityID = QU_INVALID_ACTIVITY_ID;
+	}
+	ScopedActivity( quRecurringActivityID recurringActivityID, quActivityChannelID activityChannelID = quGetChannelIDForCurrentThread() ) :
+	    activityChannelID( activityChannelID )
+	{
+		if( activityChannelID != QU_INVALID_ACTIVITY_CHANNEL_ID )
+			activityID = quStartRecurringActivity( activityChannelID, recurringActivityID );
+		else
+			activityID = QU_INVALID_ACTIVITY_ID;
 	}
 	ScopedActivity( ScopedActivity&& movable ) noexcept :
 	    activityChannelID( movable.activityChannelID ),
@@ -198,21 +204,21 @@ public:
 		EndScope();
 	}
 
+	void Rescope( const char* newActivityName )
+	{
+		Rescope( newActivityName, 0 );
+	}
+	void Rescope( const char* newActivityName, quUInt32 color )
+	{
+		if( activityID != QU_INVALID_ACTIVITY_ID )
+			quStopActivity( activityID );
+		activityID = quStartActivity( activityChannelID, newActivityName, color );
+	}
 	void Rescope( quRecurringActivityID recurringActivityID )
 	{
 		if( activityID != QU_INVALID_ACTIVITY_ID )
 			quStopActivity( activityID );
 		activityID = quStartRecurringActivity( activityChannelID, recurringActivityID );
-	}
-	void Rescope( const char* newActivityName )
-	{
-		Rescope( newActivityName, 0, 0, 0 );
-	}
-	void Rescope( const char* newActivityName, quUInt8 r, quUInt8 g, quUInt8 b )
-	{
-		if( activityID != QU_INVALID_ACTIVITY_ID )
-			quStopActivity( activityID );
-		activityID = quStartActivity( activityChannelID, newActivityName, QU_RGB( r, g, b ) );
 	}
 	void EndScope()
 	{
@@ -233,56 +239,69 @@ private:
 
 // clang-format off
 #if defined( QU_API_ENABLED )
-#	define QU_SCOPED_COUNTER( varName, counterName ) qu::ScopedCounter varName( counterName )
-#	define QU_SCOPED_COUNTER_NOADD( varName, counterName ) qu::ScopedCounter varName( counterName, false )
+	//Static init
+#	define QU_DECLARE_ACTIVITY( varName, activityName ) static quRecurringActivityID varName = ::quAddRecurringActivity( activityName, 0 )
+#	define QU_DECLARE_ACTIVITY_COLOR( varName, activityName, color ) static quRecurringActivityID varName = ::quAddRecurringActivity( activityName, color )
+
+	//Constructors
+#	define QU_SCOPED_COUNTER( varName, counterName ) qu::ScopedCounter varName = qu::ScopedCounter( counterName )
+#	define QU_SCOPED_COUNTER_COLOR( varName, counterName, color ) qu::ScopedCounter varName = qu::ScopedCounter( counterName, color )
 
 #	define QU_SCOPED_ACTIVITY_CHANNEL( varName, channelName, forCurrentThread ) qu::ScopedActivityChannel varName( channelName, forCurrentThread )
-#	define QU_SCOPED_ACTIVITY_CHANNEL_NOADD( varName, channelName, forCurrentThread ) qu::ScopedActivityChannel varName( channelName, forCurrentThread, false )
+#	define QU_SCOPED_ACTIVITY_CHANNEL_COLOR( varName, channelName, forCurrentThread, color ) qu::ScopedActivityChannel varName( channelName, forCurrentThread, color )
 
-#	define QU_DECLARE_ACTIVITY( IDName, activityName ) static quRecurringActivityID IDName = ::quAddRecurringActivity( activityName, 0 )
-#	define QU_DECLARE_ACTIVITY_CLR( IDName, activityName, clr ) static quRecurringActivityID IDName = ::quAddRecurringActivity( activityName, clr )
-#	define QU_SCOPED_ACTIVITY( IDName, varName ) qu::ScopedActivity varName( IDName )
-#	define QU_SCOPED_ACTIVITY_FOR_CHANNEL( IDName, varName, channelID ) qu::ScopedActivity varName( IDName, channelID )
-#	define QU_DECLARE_SCOPED_ACTIVITY( IDName, varName, activityName ) QU_DECLARE_ACTIVITY( IDName, activityName ); QU_SCOPED_ACTIVITY( IDName, varName )
-#	define QU_DECLARE_SCOPED_ACTIVITY_CLR( IDName, varName, activityName, clr ) QU_DECLARE_ACTIVITY_CLR( IDName, activityName, clr ); QU_SCOPED_ACTIVITY( IDName, varName )
-#	define QU_DECLARE_SCOPED_ACTIVITY_FOR_CHANNEL( IDName, varName, activityName, channelID ) QU_DECLARE_ACTIVITY( IDName, activityName ); QU_SCOPED_ACTIVITY_FOR_CHANNEL( IDName, varName, channelID )
-#	define QU_DECLARE_SCOPED_ACTIVITY_CLR_FOR_CHANNEL( IDName, varName, activityName, clr, channelID ) QU_DECLARE_ACTIVITY_CLR( IDName, activityName, clr ); QU_SCOPED_ACTIVITY_FOR_CHANNEL( IDName, varName, channelID )
-#	define QU_RESCOPE( varName, newIDName ) varName.Rescope( newIDName )
-#	define QU_DECLARE_RESCOPE( IDName, varName, activityName ) QU_DECLARE_ACTIVITY( IDName, activityName ); QU_RESCOPE( varName, IDName )
-#	define QU_DECLARE_RESCOPE_CLR( IDName, varName, activityName, clr ) QU_DECLARE_ACTIVITY_CLR( IDName, activityName, clr ); QU_RESCOPE( varName, IDName )
+#	define QU_SCOPED_ACTIVITY_ONESHOT( varName, activityName ) qu::ScopedActivity varName( activityName )
+#	define QU_SCOPED_ACTIVITY_ONESHOT_COLOR( varName, activityName, color ) qu::ScopedActivity varName( activityName, color )
+#	define QU_SCOPED_ACTIVITY_RECURRING( varName, activityName ) QU_DECLARE_ACTIVITY( QU_CONCAT( quaid, __LINE__ ), activityName ); qu::ScopedActivity varName( QU_CONCAT( quaid, __LINE__ ) )
+#	define QU_SCOPED_ACTIVITY_RECURRING_COLOR( varName, activityName, color ) QU_DECLARE_ACTIVITY_COLOR( QU_CONCAT( quaid, __LINE__ ), activityName, color ); qu::ScopedActivity varName( QU_CONCAT( quaid, __LINE__ ) )
+
+#	define QU_MARKER( markerName ) ::quAddMarker( markerName )
+
+	//Mutators
+#	define QU_SET_COUNTER_VALUE( varName, newCounterValue ) varName.SetValue( newCounterValue )
+
+#	define QU_RESCOPE_ONESHOT( varName, newActivityName ) varName.Rescope( newActivityName )
+#	define QU_RESCOPE_ONESHOT_COLOR( varName, newActivityName, color ) varName.Rescope( newActivityName, color )
+#	define QU_RESCOPE_RECURRING( varName, newActivityID ) varName.Rescope( newActivityID )
 #	define QU_END_SCOPE( varName ) varName.EndScope()
-
-#	define QU_SCOPED_ACTIVITY_NON_RECURRING( varName, activityName ) qu::ScopedActivity varName( activityName )
-#	define QU_SCOPED_ACTIVITY_CLR_NON_RECURRING( varName, activityName, clr ) qu::ScopedActivity varName( activityName, QU_R( clr ), QU_G( clr ), QU_B( clr ) )
 #else
+	//Static init
+#	define QU_DECLARE_ACTIVITY( activityID, activityName ) do {} while( false )
+#	define QU_DECLARE_ACTIVITY_COLOR( activityID, activityName, color ) do {} while( false )
+
+	//Constructors
 #	define QU_SCOPED_COUNTER( varName, counterName ) do {} while( false )
-#	define QU_SCOPED_COUNTER_NOADD( varName, counterName ) do {} while( false )
+#	define QU_SCOPED_COUNTER_COLOR( varName, counterName, color ) do {} while( false )
 
 #	define QU_SCOPED_ACTIVITY_CHANNEL( varName, channelName, forCurrentThread ) do {} while( false )
-#	define QU_SCOPED_ACTIVITY_CHANNEL_NOADD( varName, channelName, forCurrentThread ) do {} while( false )
+#	define QU_SCOPED_ACTIVITY_CHANNEL_COLOR( varName, channelName, forCurrentThread, color ) do {} while( false )
 
-#	define QU_DECLARE_ACTIVITY( IDName, activityName ) do {} while( false )
-#	define QU_DECLARE_ACTIVITY_CLR( IDName, activityName, clr ) do {} while( false )
-#	define QU_SCOPED_ACTIVITY( IDName, varName ) do {} while( false )
-#	define QU_SCOPED_ACTIVITY_FOR_CHANNEL( IDName, varName, channelID ) do {} while( false )
-#	define QU_DECLARE_SCOPED_ACTIVITY( IDName, varName, activityName ) do {} while( false )
-#	define QU_DECLARE_SCOPED_ACTIVITY_CLR( IDName, varName, activityName, clr ) do {} while( false )
-#	define QU_DECLARE_SCOPED_ACTIVITY_FOR_CHANNEL( IDName, varName, activityName, channelID ) do {} while( false )
-#	define QU_DECLARE_SCOPED_ACTIVITY_CLR_FOR_CHANNEL( IDName, varName, activityName, clr, channelID ) do {} while( false )
-#	define QU_RESCOPE( varName, newIDName ) do {} while( false )
-#	define QU_DECLARE_RESCOPE( IDName, varName, activityName ) do {} while( false )
-#	define QU_DECLARE_RESCOPE_CLR( IDName, varName, activityName, clr ) do {} while( false )
+#	define QU_SCOPED_ACTIVITY_ONESHOT( varName, activityName ) do {} while( false )
+#	define QU_SCOPED_ACTIVITY_ONESHOT_COLOR( varName, activityName, color ) do {} while( false )
+#	define QU_SCOPED_ACTIVITY_RECURRING( varName, activityID ) do {} while( false )
+#	define QU_SCOPED_ACTIVITY_RECURRING_COLOR( varName, activityName, color ) do {} while( false )
+
+#	define QU_MARKER( markerName ) do {} while( false )
+
+	//Mutators
+#	define QU_SET_COUNTER_VALUE( varName, newCounterValue ) do {} while( false )
+
+#	define QU_RESCOPE_ONESHOT( varName, newActivityName ) do {} while( false )
+#	define QU_RESCOPE_ONESHOT_COLOR( varName, newActivityName, color ) do {} while( false )
+#	define QU_RESCOPE_RECURRING( varName, newActivityID ) do {} while( false )
 #	define QU_END_SCOPE( varName ) do {} while( false )
-
-#	define QU_SCOPED_ACTIVITY_NON_RECURRING( varName, activityName ) do {} while( false )
-#	define QU_SCOPED_ACTIVITY_CLR_NON_RECURRING( varName, activityName, clr ) do {} while( false )
 #endif
 
+//Automatic varName generation
 #define QU_CAT(a, b) a ## b
 #define QU_CONCAT( a, b ) QU_CAT( a, b )
-#define QU_AUTO_ID QU_CONCAT( quaid, __LINE__ )
-#define QU_ONESHOT_ACTIVITY( activityName ) QU_SCOPED_ACTIVITY( activityName, QU_AUTO_ID )
-#define QU_RECURRING_ACTIVITY( activityName ) QU_DECLARE_SCOPED_ACTIVITY( QU_CONCAT( quai, __LINE__ ), QU_CONCAT( qusa, __LINE__ ), activityName )
+
+#define QU_ONESHOT_ACTIVITY( activityName ) QU_SCOPED_ACTIVITY_ONESHOT( QU_CONCAT( qusaid, __LINE__ ), activityName )
+#define QU_ONESHOT_ACTIVITY_COLOR( activityName, color ) QU_SCOPED_ACTIVITY_ONESHOT( QU_CONCAT( qusaid, __LINE__ ), activityName, color )
+#define QU_RECURRING_ACTIVITY( activityName ) QU_SCOPED_ACTIVITY_RECURRING( QU_CONCAT( qusaid, __LINE__ ), activityName )
+#define QU_RECURRING_ACTIVITY_COLOR( activityName, color ) QU_SCOPED_ACTIVITY_RECURRING_COLOR( QU_CONCAT( qusaid, __LINE__ ), activityName, color )
+#define QU_RECURRING_RESCOPE( varName, activityName ) QU_DECLARE_ACTIVITY( QU_CONCAT( quaid, __LINE__ ), activityName ); QU_RESCOPE_RECURRING( varName, QU_CONCAT( quaid, __LINE__ ) )
+
 #if defined( _WIN64 )
 #	define QU_INSTRUMENT_FUNCTION() QU_RECURRING_ACTIVITY( __FUNCTION__ )
 #else
