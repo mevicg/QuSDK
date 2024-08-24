@@ -105,7 +105,7 @@ static bool LoadQuApi( quLogHook_Ptr logHook )
 #else
 	//By default we load quapi from the currently installed Qumulus version. This makes instrumented applications
 	//use the same version as the installed profiler and dont have to ship the api runtime themselves.
-	std::string libName = "/Applications/Qumulus/Contents/MacOS/libquapi.dylib";
+	std::string libName = "/Applications/Qumulus.app/Contents/MacOS/libQuApi.dylib";
 
 	//If the application did ship the runtime itself (ie because it requires a specific version) it'll be next
 	//to the executable. See if the runtime exists there and use that instead.

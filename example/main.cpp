@@ -41,9 +41,9 @@
 void QU_CALL_CONV LogHook( quLogSeverity severity, const char* logMessage )
 {
 	if( severity == QU_LOG_SEVERITY_INFO )
-		std::cout << logMessage;
+		std::cout << logMessage << std::endl;
 	else
-		std::cerr << logMessage;
+		std::cerr << logMessage << std::endl;
 }
 
 int main( int argc, const char* argv[] )
