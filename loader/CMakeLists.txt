@@ -1,4 +1,3 @@
-
 if( QU_API_INSTRUMENT )
 	set( QU_API_LOADER_SOURCES
 		quLoaderDylib.h quLoaderDylib.cpp
@@ -11,10 +10,11 @@ if( QU_API_INSTRUMENT )
 
 	target_link_libraries( QuApiLoader PUBLIC QuApi )
 
-	if( APPLE )
+	if( QU_API_MACOS )
 		target_compile_options( QuApiLoader PRIVATE
-		                        $<$<COMPILE_LANGUAGE:CXX>:-x objective-c++>
-		                        $<$<COMPILE_LANGUAGE:C>:-x objective-c> )
+			$<$<COMPILE_LANGUAGE:CXX>:-x objective-c++>
+			$<$<COMPILE_LANGUAGE:C>:-x objective-c>
+		)
 	endif()
 else()
 	#By not building the loader when QuApi is disabled or unsupported we'll compile

@@ -150,12 +150,14 @@ static bool LoadQuApi( quLogHook_Ptr logHook )
 	 * profiling is not supported. This is fine, it allows keeping intstrumentation enabled even in release builds
 	 * without introducing any overhead.
 	 */
-	if( !library.Load( libName.c_str() ) )
+	std::optional< std::string > loadError = library.Load( libName.c_str() );
+	if( loadError.has_value() )
 	{
 		if( logHook != nullptr )
 		{
-			std::ostringstream oss;
-			oss << "QuApi: Failed loading library from \"" << libName << "\".";
+			std::stringstream oss;
+			oss << "QuApi: Failed loading library from \"" << libName.c_str() << "\":" << std::endl;
+			oss << *loadError;
 			logHook( QU_LOG_SEVERITY_ERRR, oss.str().c_str() );
 		}
 		return false;

@@ -17,6 +17,7 @@
 #include "quLoaderDylib.h"
 #if defined( _WIN64 )
 #	include <Windows.h>
+#	include <algorithm>
 using NativeHandleType = HMODULE;
 #else
 #	include <cstddef>
@@ -27,14 +28,35 @@ using NativeHandleType = void*;
 namespace qul
 {
 
-bool Dylib::Load( const char* libPathAndName )
+std::optional< std::string > Dylib::Load( const char* libPathAndName )
 {
 #if defined( _WIN64 )
 	handle = (HandleType)LoadLibraryA( libPathAndName );
-	return handle != INVALID_HANDLE;
+	if( handle == INVALID_HANDLE )
+	{
+		CHAR buffer[ 256 ] = { 0 };
+		if( !FormatMessageA( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+		                     NULL, GetLastError(), MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
+		                     buffer, 255, NULL ) != 0 ) //256 minus one so that at least we got a nullchar at the end.
+		{
+			return "Failed loading dll";
+		}
+		else
+		{
+			size_t messageLength = max( strlen( buffer ), 2 );
+			buffer[ messageLength - 1 ] = 0; //Discard \n
+			buffer[ messageLength - 2 ] = 0; //Discard \r
+			return buffer;
+		}
+	}
+
+	return std::nullopt;
 #else
 	handle = (HandleType)dlopen( libPathAndName, RTLD_NOW | RTLD_LOCAL );
-	return handle != INVALID_HANDLE;
+	if( handle == INVALID_HANDLE )
+		return dlerror();
+
+	return std::nullopt;
 #endif
 }
 void Dylib::Unload()

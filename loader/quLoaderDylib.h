@@ -15,6 +15,8 @@
  */
 
 #pragma once
+#include <optional>
+#include <string>
 #if defined( _WIN64 )
 #	define DLL_CALL __cdecl
 #else
@@ -29,7 +31,7 @@ class Dylib
 public:
 	typedef void( DLL_CALL* Function )();
 
-	bool Load( const char* libPathAndName );
+	std::optional< std::string > Load( const char* libPathAndName );
 	void Unload();
 
 	bool IsLoaded() const;
