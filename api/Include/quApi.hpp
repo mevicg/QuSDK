@@ -266,8 +266,8 @@ private:
 #	define QU_END_SCOPE( varName ) varName.EndScope()
 #else
 	//Static init
-#	define QU_DECLARE_ACTIVITY( activityID, activityName ) do {} while( false )
-#	define QU_DECLARE_ACTIVITY_COLOR( activityID, activityName, color ) do {} while( false )
+#	define QU_DECLARE_ACTIVITY( varName, activityName ) static quRecurringActivityID varName = QU_INVALID_RECURRING_ACTIVITY_ID
+#	define QU_DECLARE_ACTIVITY_COLOR( varName, activityName, color ) static quRecurringActivityID varName = QU_INVALID_RECURRING_ACTIVITY_ID
 
 	//Constructors
 #	define QU_SCOPED_COUNTER( varName, counterName ) do {} while( false )

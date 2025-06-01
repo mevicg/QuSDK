@@ -52,16 +52,11 @@ endif()
 #debug/release configurations.
 add_compile_options( "$<$<CONFIG:DEBUG>:-DDEBUG>" )
 
-if( QU_API_LINUX )
-	set( QU_API_INSTRUMENT_DEFAULT OFF )
-else()
-	set( QU_API_INSTRUMENT_DEFAULT ON )
-endif()
-OPTION( QU_API_INSTRUMENT "Whether or not Qumulus instrumentation should be enabled." ${QU_API_INSTRUMENT_DEFAULT} )
+OPTION( QU_API_INSTRUMENT "Whether or not Qumulus instrumentation should be enabled." ON )
 
 if( QU_API_INSTRUMENT )
-	#QuApi is only implemented for windows and macos.
-	if( QU_API_WINDOWS OR QU_API_MACOS )
+	#QuApi is only implemented for windows, macos and linux.
+	if( QU_API_WINDOWS OR QU_API_MACOS OR QU_API_LINUX )
 		message( "QuApi enabled" )
 	else()
 		message( FATAL_ERROR "QuApi is enabled on unsupported platform" )

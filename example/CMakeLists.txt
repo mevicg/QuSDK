@@ -1,4 +1,3 @@
-
 set( QU_API_EXAMPLE_SOURCES
 	main.cpp
 	TestdataGenerator.h TestdataGenerator.cpp
@@ -10,3 +9,6 @@ add_executable( QuApiExample ${QU_API_EXAMPLE_SOURCES} )
 #which compiles the functions as no-ops.
 target_link_libraries( QuApiExample PUBLIC QuApiLoader )
 set_target_properties( QuApiExample PROPERTIES FOLDER "libs/qusdk" )
+
+#The example needs the api to be enabled, otherwise it wont be able to generate any data.
+target_compile_definitions( QuApiExample PRIVATE QU_API_ENABLED )

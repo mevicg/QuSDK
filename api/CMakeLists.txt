@@ -1,7 +1,7 @@
 
 add_library( QuApi INTERFACE )
 target_include_directories( QuApi INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/Include/ )
-target_compile_definitions( QuApi INTERFACE $<$<CXX_COMPILER_ID:MSVC>:_CRT_SECURE_NO_WARNINGS> )
+target_compile_definitions( QuApi INTERFACE _CRT_SECURE_NO_WARNINGS )
 
 if( QU_API_INSTRUMENT )
 	target_compile_definitions( QuApi INTERFACE QU_API_ENABLED )

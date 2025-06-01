@@ -102,7 +102,7 @@ static bool LoadQuApi( quLogHook_Ptr logHook )
 	std::string libName( 0xFFFF, char( 0 ) );
 	if( !EnvVar::GetValue( envVarName.c_str(), libName.data(), libName.size() ) )
 		libName = "QuApi.dll";
-#else
+#elif defined( __APPLE__ )
 	//By default we load quapi from the currently installed Qumulus version. This makes instrumented applications
 	//use the same version as the installed profiler and dont have to ship the api runtime themselves.
 	std::string libName = "/Applications/Qumulus.app/Contents/MacOS/libQuApi.dylib";
@@ -143,11 +143,17 @@ static bool LoadQuApi( quLogHook_Ptr logHook )
 		}
 	}
 	istream.close();
+#elif defined( __linux__ )
+	//Getting environment variable values might modify the character buffer, so we assign the default library name
+	//only after getting the environment variable failed.
+	std::string libName( 0xFFFF, char( 0 ) );
+	if( !EnvVar::GetValue( envVarName.c_str(), libName.data(), libName.size() ) )
+		libName = "QuApi.so";
 #endif
 
 	/**
 	 * If loading the library failed that must mean this QuApi user did not install the QuApi runtime and thus
-	 * profiling is not supported. This is fine, it allows keeping intstrumentation enabled even in release builds
+	 * profiling is not supported. This is fine, it allows keeping instrumentation enabled even in release builds
 	 * without introducing any overhead.
 	 */
 	std::optional< std::string > loadError = library.Load( libName.c_str() );

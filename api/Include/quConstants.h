@@ -23,6 +23,8 @@
 #elif defined( __APPLE__ )
 #	include <cstddef> //For size_t
 #	define QU_CALL_CONV
+#elif defined( __linux__ )
+#	define QU_CALL_CONV __cdecl
 #else
 //Any platform can be supported as long as we're not enabled. When we're disabled all our
 //functions are implemented as inline functions returning failure inside the header.
