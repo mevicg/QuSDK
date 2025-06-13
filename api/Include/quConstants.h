@@ -48,7 +48,7 @@ typedef char quInt8;
 
 //QuApi core
 #define QU_MAKE_VERSION( major, minor, micro ) ( ( major << 24 ) | ( minor << 16 ) | micro )
-#define QU_VERSION QU_MAKE_VERSION( 1, 2, 0 )
+#define QU_VERSION QU_MAKE_VERSION( 1, 3, 1 )
 #define QU_EXTRACT_MAJOR( version ) ( version >> 24 )
 #define QU_EXTRACT_MINOR( version ) ( ( version >> 16 ) & 0xFF )
 #define QU_EXTRACT_MICRO( version ) ( version & 0xFFFF )
