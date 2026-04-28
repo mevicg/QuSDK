@@ -5,7 +5,6 @@ set( QU_API_LOADER_SOURCES
 )
 add_library( QuApiLoader STATIC ${QU_API_LOADER_SOURCES} )
 source_group( TREE ${CMAKE_CURRENT_SOURCE_DIR}/ FILES ${QU_API_LOADER_SOURCES} )
-set_target_properties( QuApiLoader PROPERTIES FOLDER "libs/qusdk" )
 
 target_link_libraries( QuApiLoader PUBLIC QuApi )
 

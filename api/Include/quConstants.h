@@ -48,7 +48,7 @@ typedef char quInt8;
 
 //QuApi core
 #define QU_MAKE_VERSION( major, minor, micro ) ( ( major << 24 ) | ( minor << 16 ) | micro )
-#define QU_VERSION QU_MAKE_VERSION( 1, 3, 1 )
+#define QU_VERSION QU_MAKE_VERSION( 2, 0, 0 )
 #define QU_EXTRACT_MAJOR( version ) ( version >> 24 )
 #define QU_EXTRACT_MINOR( version ) ( ( version >> 16 ) & 0xFF )
 #define QU_EXTRACT_MICRO( version ) ( version & 0xFFFF )
@@ -77,20 +77,16 @@ typedef quUInt16 quOutputID;
 #define QU_INVALID_OUTPUT_ID ( ( quOutputID ) - 1 )
 
 //Counters
-#define QU_MAX_COUNTER_NAME_LENGTH 63 //Maximum length of Counter names not including the nul character.
 typedef quUInt16 quCounterID;
 #define QU_INVALID_COUNTER_ID ( ( quCounterID ) - 1 )
 
 //Activity channels
-#define QU_MAX_ACTIVITY_CHANNEL_NAME_LENGTH 63 //Maximum length of ActivityChannel names not including the nul character.
 typedef quUInt16 quActivityChannelID;
 #define QU_INVALID_ACTIVITY_CHANNEL_ID ( ( quActivityChannelID ) - 1 )
 typedef quUInt32 quRecurringActivityID;
 #define QU_INVALID_RECURRING_ACTIVITY_ID ( ( quRecurringActivityID ) - 1 )
-#define QU_MAX_RECURRING_ACTIVITY_NAME_LENGTH 63 //Maximum length of Recurring Activity names not including the nul character.
 typedef quUInt64 quActivityID;
 #define QU_INVALID_ACTIVITY_ID ( ( quActivityID ) - 1 )
-#define QU_MAX_ACTIVITY_NAME_LENGTH 63 //Maximum length of Activity names not including the nul character.
 typedef quUInt64 quFlowID;
 #define QU_INVALID_FLOW_ID ( ( quFlowID ) - 1 )
 

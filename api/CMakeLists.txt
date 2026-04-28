@@ -20,5 +20,4 @@ set( QU_API_SOURCES
 	Include/quApi.hpp
 )
 add_custom_target( QuApi.h SOURCES ${QU_API_SOURCES} )
-set_target_properties( QuApi.h PROPERTIES FOLDER "libs/qusdk" )
 source_group( TREE ${CMAKE_CURRENT_SOURCE_DIR}/Include FILES ${QU_API_SOURCES} )

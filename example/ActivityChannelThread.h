@@ -29,13 +29,13 @@
 class ActivityChannelThread
 {
 public:
-	ActivityChannelThread( const std::string& threadName, uint32_t loopWaitMS );
+	ActivityChannelThread( const std::u8string& threadName, uint32_t loopWaitMS );
 	~ActivityChannelThread();
 
 private:
 	void ThreadRun();
 
-	std::string threadName;                       //!< The name for this thread, it will be used to give our activity channel the same name.
+	std::u8string threadName;                     //!< The name for this thread, it will be used to give our activity channel the same name.
 	uint32_t loopWaitMS;                          //!< Configuration variable used to control the density of activities generated for our activity channel.
 	std::vector< quActivityID > activeActivities; //!< We're manually maintaining a stack of active activities, usually you would have functions which have been instrumented.
 

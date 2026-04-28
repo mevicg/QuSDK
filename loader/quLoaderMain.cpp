@@ -263,17 +263,17 @@ void UnloadQuApi()
 } //End namespace qul
 
 //QuApi core
-bool QU_CALL_CONV quInitialize( quUInt32 headerVersion, quLogHook_Ptr logHook )
+quUInt64 QU_CALL_CONV quInitialize( quUInt32 headerVersion, quLogHook_Ptr logHook )
 {
 	//It's possible for the application to just try to initialize before explicitly loading the dll. To support this case we
 	//automatically try to load the library here.
 	if( qu::Initialize == nullptr && !qul::LoadQuApi( logHook ) )
-		return false;
+		return 0;
 
 	if( qu::Initialize != nullptr )
 		return qu::Initialize( headerVersion, logHook );
 	else
-		return false;
+		return 0;
 }
 void QU_CALL_CONV quRelease()
 {

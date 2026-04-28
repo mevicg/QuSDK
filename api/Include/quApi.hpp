@@ -17,6 +17,7 @@
 #ifndef _QU_API_HPP_
 #define _QU_API_HPP_
 #include <string.h> //For strncpy
+#include <string>   //For std::u8string
 #include <utility>  //For std::move
 #include "quApi.h"
 
@@ -26,22 +27,20 @@ namespace qu
 class ScopedCounter
 {
 public:
-	ScopedCounter( const char* counterName, bool addImmediately = true ) :
+	ScopedCounter( const char8_t* counterName, bool addImmediately = true ) :
 	    ScopedCounter( counterName, 0, addImmediately )
 	{
 	}
-	ScopedCounter( const char* counterName, quUInt32 color, bool addImmediately = true ) :
+	ScopedCounter( const char8_t* counterName, quUInt32 color, bool addImmediately = true ) :
 	    counterID( QU_INVALID_COUNTER_ID ),
+	    name( counterName ),
 	    color( color )
 	{
-		strncpy( nameBuffer, counterName, QU_MAX_COUNTER_NAME_LENGTH );
-		nameBuffer[ QU_MAX_COUNTER_NAME_LENGTH ] = '\0';
-
 		if( addImmediately )
 			Add();
 	}
 	ScopedCounter( ScopedCounter&& movable ) noexcept :
-	    ScopedCounter( "", 0, false )
+	    ScopedCounter( u8"", 0, false )
 	{
 		*this = std::move( movable );
 	}
@@ -50,7 +49,7 @@ public:
 		Remove();
 
 		std::swap( counterID, movable.counterID );
-		memcpy( nameBuffer, movable.nameBuffer, sizeof( nameBuffer ) );
+		std::swap( name, movable.name );
 		color = movable.color;
 		return *this;
 	}
@@ -64,7 +63,7 @@ public:
 		if( counterID != QU_INVALID_COUNTER_ID )
 			return false;
 
-		counterID = quAddCounter( nameBuffer, color );
+		counterID = quAddCounter( (const char*)name.c_str(), color );
 		return counterID != QU_INVALID_COUNTER_ID;
 	}
 	void Remove()
@@ -86,29 +85,27 @@ private:
 	ScopedCounter& operator=( const ScopedCounter& ) = delete;
 
 	quCounterID counterID;
-	char nameBuffer[ QU_MAX_COUNTER_NAME_LENGTH + 1 ];
+	std::u8string name;
 	quUInt32 color;
 };
 class ScopedActivityChannel
 {
 public:
-	ScopedActivityChannel( const char* channelName, bool forCurrentThread, bool addImmediately = true ) :
+	ScopedActivityChannel( const char8_t* channelName, bool forCurrentThread, bool addImmediately = true ) :
 	    ScopedActivityChannel( channelName, forCurrentThread, 0, addImmediately )
 	{
 	}
-	ScopedActivityChannel( const char* channelName, bool forCurrentThread, quUInt32 color, bool addImmediately = true ) :
+	ScopedActivityChannel( const char8_t* channelName, bool forCurrentThread, quUInt32 color, bool addImmediately = true ) :
 	    activityChannelID( QU_INVALID_ACTIVITY_CHANNEL_ID ),
+	    name( channelName ),
 	    forCurrentThread( forCurrentThread ),
 	    color( color )
 	{
-		strncpy( nameBuffer, channelName, QU_MAX_ACTIVITY_CHANNEL_NAME_LENGTH );
-		nameBuffer[ QU_MAX_ACTIVITY_CHANNEL_NAME_LENGTH ] = '\0';
-
 		if( addImmediately )
 			Add();
 	}
 	ScopedActivityChannel( ScopedActivityChannel&& movable ) noexcept :
-	    ScopedActivityChannel( "", false, 0, false )
+	    ScopedActivityChannel( u8"", false, 0, false )
 	{
 		*this = std::move( movable );
 	}
@@ -117,7 +114,7 @@ public:
 		Remove();
 
 		std::swap( activityChannelID, movable.activityChannelID );
-		memcpy( nameBuffer, movable.nameBuffer, sizeof( nameBuffer ) );
+		std::swap( name, movable.name );
 		forCurrentThread = movable.forCurrentThread;
 		color = movable.color;
 		return *this;
@@ -133,9 +130,9 @@ public:
 			return false;
 
 		if( forCurrentThread )
-			activityChannelID = quAddActivityChannelForCurrentThread( nameBuffer, color );
+			activityChannelID = quAddActivityChannelForCurrentThread( (const char*)name.c_str(), color );
 		else
-			activityChannelID = quAddActivityChannel( nameBuffer, color );
+			activityChannelID = quAddActivityChannel( (const char*)name.c_str(), color );
 
 		return activityChannelID != QU_INVALID_ACTIVITY_CHANNEL_ID;
 	}
@@ -158,7 +155,7 @@ private:
 	ScopedActivityChannel& operator=( const ScopedActivityChannel& ) = delete;
 
 	quActivityChannelID activityChannelID;
-	char nameBuffer[ QU_MAX_ACTIVITY_CHANNEL_NAME_LENGTH + 1 ];
+	std::u8string name;
 	bool forCurrentThread;
 	quUInt32 color;
 };

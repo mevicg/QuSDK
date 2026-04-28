@@ -28,9 +28,9 @@ static std::uniform_real_distribution< float > markerDistribution( 300.0f, 4000.
 TestdataGenerator::TimePoint TestdataGenerator::applicationStartTime = TestdataGenerator::Clock::now();
 
 TestdataGenerator::TestdataGenerator() :
-    sineWave( "Sine Wave", false ),
-    saw( "Sawtooth", false ),
-    saw100( "Saw 100", false )
+    sineWave( u8"Sine Wave", false ),
+    saw( u8"Sawtooth", false ),
+    saw100( u8"Saw 100", false )
 {
 }
 TestdataGenerator::~TestdataGenerator() = default;
@@ -82,9 +82,9 @@ void TestdataGenerator::Start()
 	saw100.Add();
 	timeOfNextMark = GetNextMarkerTime();
 
-	lowFrequencyActivityThread.reset( new ActivityChannelThread( "Low Frequency", 10 ) );
-	mediumFrequencyActivityThread.reset( new ActivityChannelThread( "Medium Frequency", 5 ) );
-	highFrequencyActivityThread.reset( new ActivityChannelThread( "High Frequency", 0 ) );
+	lowFrequencyActivityThread.reset( new ActivityChannelThread( u8"Low Frequency", 10 ) );
+	mediumFrequencyActivityThread.reset( new ActivityChannelThread( u8"Medium Frequency", 5 ) );
+	highFrequencyActivityThread.reset( new ActivityChannelThread( u8"High Frequency", 0 ) );
 }
 void TestdataGenerator::Stop()
 {

@@ -37,7 +37,7 @@ static std::array< quRecurringActivityID, 5 > RECURRING_ACTIVITY_IDS = {
 	quAddRecurringActivity( "Stack 4", 0 )
 };
 
-ActivityChannelThread::ActivityChannelThread( const std::string& threadName, uint32_t loopWaitMS ) :
+ActivityChannelThread::ActivityChannelThread( const std::u8string& threadName, uint32_t loopWaitMS ) :
     threadName( threadName ),
     loopWaitMS( loopWaitMS ),
     shouldStop( false )
@@ -53,7 +53,7 @@ ActivityChannelThread::~ActivityChannelThread()
 
 void ActivityChannelThread::ThreadRun()
 {
-	std::string channelName = threadName + " Channel";
+	std::u8string channelName = threadName + u8" Channel";
 	//Activity channels do not have to be related to threads, but in our case they are; so we
 	//can use this utility function to have a channel be alive on this thread for as long as it runs.
 	qu::ScopedActivityChannel activityChannel( channelName.c_str(), true );

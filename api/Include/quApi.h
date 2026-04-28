@@ -31,8 +31,8 @@
 #endif
 
 //QuApi core
-typedef bool( QU_CALL_CONV* quInitialize_Ptr )( quUInt32 version, quLogHook_Ptr logHook );
-QU_INLINE_IF_DISABLED bool QU_CALL_CONV quInitialize( quUInt32 version, quLogHook_Ptr logHook ) QU_RETURN_IF_DISABLED( false );
+typedef quUInt64( QU_CALL_CONV* quInitialize_Ptr )( quUInt32 version, quLogHook_Ptr logHook );
+QU_INLINE_IF_DISABLED quUInt64 QU_CALL_CONV quInitialize( quUInt32 version, quLogHook_Ptr logHook ) QU_RETURN_IF_DISABLED( false );
 typedef void( QU_CALL_CONV* quRelease_Ptr )();
 QU_INLINE_IF_DISABLED void QU_CALL_CONV quRelease() QU_RETURN_IF_DISABLED( void() );
 
